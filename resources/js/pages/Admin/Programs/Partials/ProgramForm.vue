@@ -188,8 +188,8 @@ const submit = () => {
                                         Aktif
                                     </SelectItem>
                                     <SelectItem
-                                        value="closed">
-                                        Close
+                                        value="ended">
+                                        Ended
                                     </SelectItem>
                                 </SelectContent>
                             </Select>

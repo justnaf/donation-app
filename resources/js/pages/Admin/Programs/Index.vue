@@ -60,7 +60,7 @@ const cycleStatus = (program: Program) => {
     const newStatus = statusOrder[nextIndex];
 
     router.patch(
-        route('admin.programs.update', program.id),
+        route('admin.programs.update.status', program.slug),
         { status: newStatus },
         { preserveScroll: true },
     );

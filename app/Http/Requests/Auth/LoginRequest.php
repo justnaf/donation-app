@@ -26,8 +26,9 @@ class LoginRequest extends FormRequest
      */
     public function rules(): array
     {
+        // Perubahan 1: Ubah validasi dari 'email' menjadi 'login'
         return [
-            'email' => ['required', 'string', 'email'],
+            'login' => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
@@ -41,11 +42,24 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        // Perubahan 2: Logika otentikasi dinamis
+        $login = $this->input('login');
+
+        // Tentukan tipe field: 'email' atau 'username'
+        $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        // Buat kredensial untuk percobaan login
+        $credentials = [
+            $fieldType => $login,
+            'password' => $this->input('password')
+        ];
+
+        if (! Auth::attempt($credentials, $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                // Perubahan 3: Sesuaikan kunci pesan error
+                'login' => trans('auth.failed'),
             ]);
         }
 
@@ -68,7 +82,8 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
+            // Perubahan 4: Sesuaikan kunci pesan error throttle
+            'login' => trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
@@ -80,6 +95,7 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        // Perubahan 5: Gunakan input 'login' untuk throttle key
+        return Str::transliterate(Str::lower($this->input('login')) . '|' . $this->ip());
     }
 }

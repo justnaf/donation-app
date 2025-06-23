@@ -10,11 +10,13 @@ test('login screen can be rendered', function () {
     $response->assertStatus(200);
 });
 
-test('users can authenticate using the login screen', function () {
+// Tes diubah untuk lebih spesifik dan menggunakan field 'login'
+test('users can authenticate using email', function () {
     $user = User::factory()->create();
 
+    // Menggunakan kunci 'login' untuk mengirim email
     $response = $this->post('/login', [
-        'email' => $user->email,
+        'login' => $user->email,
         'password' => 'password',
     ]);
 
@@ -22,11 +24,27 @@ test('users can authenticate using the login screen', function () {
     $response->assertRedirect(route('dashboard', absolute: false));
 });
 
+// Tes BARU untuk memverifikasi login dengan username
+test('users can authenticate using username', function () {
+    $user = User::factory()->create();
+
+    // Menggunakan kunci 'login' untuk mengirim username
+    $response = $this->post('/login', [
+        'login' => $user->username,
+        'password' => 'password',
+    ]);
+
+    $this->assertAuthenticated();
+    $response->assertRedirect(route('dashboard', absolute: false));
+});
+
+
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
+    // Menggunakan kunci 'login'
     $this->post('/login', [
-        'email' => $user->email,
+        'login' => $user->email,
         'password' => 'wrong-password',
     ]);
 

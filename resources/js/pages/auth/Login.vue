@@ -14,8 +14,9 @@ defineProps<{
     canResetPassword: boolean;
 }>();
 
+// --- PERUBAHAN 1: Mengubah 'email' menjadi 'login' ---
 const form = useForm({
-    email: '',
+    login: '', // Diubah dari 'email'
     password: '',
     remember: false,
 });
@@ -28,7 +29,7 @@ const submit = () => {
 </script>
 
 <template>
-    <AuthBase title="Log in to your account" description="Enter your email and password below to log in">
+    <AuthBase title="Log in to your account" description="Enter your username or email below to log in">
         <Head title="Log in" />
 
         <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">
@@ -38,18 +39,18 @@ const submit = () => {
         <form @submit.prevent="submit" class="flex flex-col gap-6">
             <div class="grid gap-6">
                 <div class="grid gap-2">
-                    <Label for="email">Email address</Label>
+                    <Label for="login">Username or Email</Label>
                     <Input
-                        id="email"
-                        type="email"
+                        id="login"
+                        type="text"
                         required
                         autofocus
                         :tabindex="1"
-                        autocomplete="email"
-                        v-model="form.email"
-                        placeholder="email@example.com"
+                        autocomplete="username"
+                        v-model="form.login"
+                        placeholder="your_username or email@example.com"
                     />
-                    <InputError :message="form.errors.email" />
+                    <InputError :message="form.errors.login" />
                 </div>
 
                 <div class="grid gap-2">
@@ -73,7 +74,7 @@ const submit = () => {
 
                 <div class="flex items-center justify-between">
                     <Label for="remember" class="flex items-center space-x-3">
-                        <Checkbox id="remember" v-model="form.remember" :tabindex="3" />
+                        <Checkbox id="remember" v-model:checked="form.remember" :tabindex="3" />
                         <span>Remember me</span>
                     </Label>
                 </div>

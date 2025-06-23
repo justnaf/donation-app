@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class DonationProgram extends Model
 {
@@ -37,6 +39,14 @@ class DonationProgram extends Model
         'start_date' => 'datetime',
         'end_date' => 'datetime',
         'target_amount' => 'decimal:2',
+    ];
+
+    /**
+     * Atribut virtual yang akan ditambahkan saat model diubah menjadi array/JSON.
+     * @var array
+     */
+    protected $appends = [
+        'poster_url', // <-- Tambahkan ini
     ];
 
     /**
@@ -100,5 +110,26 @@ class DonationProgram extends Model
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+    /**
+     * Accessor untuk atribut 'poster_url'.
+     *
+     * @return string
+     */
+    public function getPosterUrlAttribute(): string
+    {
+        // Jika tidak ada poster, kembalikan URL placeholder
+        if (empty($this->poster_path)) {
+            // Anda bisa menggunakan layanan seperti unplash atau placeholder.com
+            return 'https://via.placeholder.com/500x300.png?text=No+Image';
+        }
+
+        // Jika path sudah berupa URL lengkap
+        if (Str::startsWith($this->poster_path, 'http')) {
+            return $this->poster_path;
+        }
+
+        // Jika berupa path file, buat URL lengkap dari disk 'public'
+        return Storage::url($this->poster_path);
     }
 }

@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('donation_programs', function (Blueprint $table) {
+            $table->id();
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('poster_path')->nullable();

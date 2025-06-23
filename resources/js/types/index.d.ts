@@ -14,7 +14,8 @@ export interface NavItem {
     title: string;
     href: string;
     icon?: LucideIcon;
-    isActive?: boolean;
+    external?: boolean;
+    activePattern?: string;
 }
 
 export type AppPageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
@@ -27,6 +28,7 @@ export type AppPageProps<T extends Record<string, unknown> = Record<string, unkn
 
 export interface User {
     id: number;
+    username: string;
     name: string;
     email: string;
     avatar?: string;
@@ -34,5 +36,12 @@ export interface User {
     created_at: string;
     updated_at: string;
 }
+
+export interface FlashProps {
+    flash?: {
+      success?: string
+      error?: string
+    }
+  }
 
 export type BreadcrumbItemType = BreadcrumbItem;

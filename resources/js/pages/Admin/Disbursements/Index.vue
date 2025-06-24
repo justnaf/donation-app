@@ -12,15 +12,14 @@ import useSweetAlert from '@/composables/useSweetAlert';
 
 // --- Tipe Data ---
 interface Program { id: number; name: string; slug: string; }
-interface Update { id: number; title: string; created_at: string; }
+interface Disbursement { id: number; description: string; amount: number; disbursed_at: string; }
 interface PaginationLink { url: string | null; label: string; active: boolean; }
 
-const { confirmDelete } = useSweetAlert();
 // --- Props ---
 const props = defineProps<{
     allPrograms: Program[];
-    updates: {
-        data: Update[];
+    disbursements: {
+        data: Disbursement[];
         links: PaginationLink[];
     } | null;
     filters: {
@@ -31,37 +30,40 @@ const props = defineProps<{
 // --- State ---
 const selectedProgram = ref<string | undefined>(props.filters.program ?? undefined);
 
+const { confirmDelete } = useSweetAlert();
+
 // --- Watcher untuk mengubah data saat dropdown diganti ---
 watch(selectedProgram, (newSlug) => {
-    if (!newSlug) {
-        router.get(route('admin.news.index'));
-        return;
-    }
+    // Arahkan ke rute yang sama dengan parameter query baru
     router.get(
-        route('admin.news.index'),
+        route('admin.disbursements.index'), // Sesuaikan dengan nama rute yang benar
         { program: newSlug },
         { preserveState: true, replace: true, preserveScroll: true }
     );
 });
 
 // --- Fungsi Aksi ---
-const handleDelete = (updateId: number) => {
+const handleDelete = (disbursementId: number) => {
     confirmDelete(() => {
-        router.delete(route('admin.news.destroy', updateId), { preserveScroll: true });
+        router.delete(route('admin.disbursements.destroy', disbursementId), {
+            preserveScroll: true,
+        });
     });
 };
+
+const formatRupiah = (amount: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
 const formatDate = (date: string) => new Date(date).toLocaleDateString('id-ID', { dateStyle: 'long' });
 
 // --- Breadcrumbs ---
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: route('admin.dashboard') },
-    { title: 'Kelola Kabar Terbaru', href: route('admin.news.index') },
+    { title: 'Kelola Pencairan Dana', href: route('admin.disbursements.index') }, // Sesuaikan dengan nama rute
 ];
 </script>
 
 <template>
 
-    <Head title="Kelola Kabar Terbaru" />
+    <Head title="Kelola Pencairan Dana" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div
@@ -72,7 +74,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                     <h1 class="text-2xl font-semibold">
                         Kelola
-                        Kabar Terbaru</h1>
+                        Pencairan Dana</h1>
                     <div
                         class="flex w-full items-center gap-2 sm:w-auto">
                         <Select v-model="selectedProgram">
@@ -92,13 +94,13 @@ const breadcrumbs: BreadcrumbItem[] = [
                         </Select>
 
                         <Link
-                            :href="selectedProgram ? route('admin.news.create', { program: selectedProgram }) : '#'"
+                            :href="selectedProgram ? route('admin.disbursements.create', { program: selectedProgram }) : '#'"
                             :class="{ 'pointer-events-none opacity-50': !selectedProgram }">
                         <Button
                             :disabled="!selectedProgram">
                             <PlusCircle
                                 class="mr-2 h-4 w-4" />
-                            Tambah Kabar
+                            Catat Pencairan
                         </Button>
                         </Link>
                     </div>
@@ -114,9 +116,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                         class="text-sm text-muted-foreground">
                         Silakan pilih program dari dropdown
                         di
-                        atas untuk melihat atau menambah
-                        kabar
-                        terbaru.</p>
+                        atas untuk melihat atau mencatat
+                        pencairan dana.</p>
                 </div>
 
                 <!-- Tampilan Konten: Tabel atau pesan jika sudah ada program dipilih -->
@@ -125,9 +126,12 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Judul Kabar
+                                <TableHead>Deskripsi
+                                    Penggunaan
                                 </TableHead>
-                                <TableHead>Tanggal Publikasi
+                                <TableHead>Jumlah
+                                </TableHead>
+                                <TableHead>Tanggal Dicairkan
                                 </TableHead>
                                 <TableHead
                                     class="w-[120px] text-right">
@@ -136,27 +140,33 @@ const breadcrumbs: BreadcrumbItem[] = [
                         </TableHeader>
                         <TableBody>
                             <TableRow
-                                v-if="!updates || updates.data.length === 0">
-                                <TableCell colspan="3"
+                                v-if="!disbursements || disbursements.data.length === 0">
+                                <TableCell colspan="4"
                                     class="h-24 text-center">
-                                    Belum ada kabar terbaru
+                                    Belum ada pencairan dana
                                     untuk program ini.
                                 </TableCell>
                             </TableRow>
                             <TableRow v-else
-                                v-for="update in updates.data"
-                                :key="update.id">
+                                v-for="disbursement in disbursements.data"
+                                :key="disbursement.id">
                                 <TableCell
                                     class="font-medium">
-                                    {{ update.title }}
-                                </TableCell>
+                                    {{
+                                        disbursement.description
+                                    }}</TableCell>
+                                <TableCell
+                                    class="font-semibold text-primary">
+                                    {{
+                                        formatRupiah(disbursement.amount)
+                                    }}</TableCell>
                                 <TableCell>{{
-                                    formatDate(update.created_at)
+                                    formatDate(disbursement.disbursed_at)
                                 }}</TableCell>
                                 <TableCell
                                     class="text-right space-x-2">
                                     <Link
-                                        :href="route('admin.news.edit', update.id)">
+                                        :href="route('admin.disbursements.edit', disbursement.id)">
                                     <Button size="icon"
                                         variant="outline">
                                         <Pencil
@@ -164,7 +174,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     </Button>
                                     </Link>
                                     <Button
-                                        @click="handleDelete(update.id)"
+                                        @click="handleDelete(disbursement.id)"
                                         size="icon"
                                         variant="destructive">
                                         <Trash2
@@ -176,10 +186,11 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </Table>
                 </div>
 
-                <!-- Paginasi (hanya muncul jika ada data update) -->
-                <div v-if="updates"
+                <!-- Paginasi (hanya muncul jika ada data) -->
+                <div v-if="disbursements"
                     class="flex justify-center">
-                    <Pagination :links="updates.links" />
+                    <Pagination
+                        :links="disbursements.links" />
                 </div>
             </div>
         </div>

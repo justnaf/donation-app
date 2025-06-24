@@ -36,7 +36,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head :title="`Edit Kabar: ${update.title}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="p-4 sm:p-6">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <UpdateForm :program="update.program"
                 :update="update" />
         </div>

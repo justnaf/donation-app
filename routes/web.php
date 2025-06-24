@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DonationProgramController as AdminDonationProgram
 use App\Http\Controllers\Admin\DonationController as AdminDonationController;
 use App\Http\Controllers\Admin\DonationCategoryController as AdminDonationCategoryController;
 use App\Http\Controllers\Admin\ProgramUpdateController as AdminProgramUpdateController;
+use App\Http\Controllers\Admin\FundDisbursementController as AdminFundController;
 use App\Http\Controllers\DonationProgramController;
 use App\Http\Controllers\DonationController;
 
@@ -30,6 +31,13 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
     Route::get('/news/create/{program}', [AdminProgramUpdateController::class, 'create'])->name('news.create');
     Route::get('/news/{update}/edit', [AdminProgramUpdateController::class, 'edit'])->name('news.edit');
     Route::put('/news/{update}', [AdminProgramUpdateController::class, 'update'])->name('news.update');
+    Route::delete('/news/{update}', [AdminProgramUpdateController::class, 'destroy'])->name('news.destroy');
+    Route::get('/disbursements', [AdminFundController::class, 'index'])->name('disbursements.index');
+    Route::post('/disbursements/{program}', [AdminFundController::class, 'store'])->name('disbursements.store');
+    Route::get('/disbursements/create/{program}', [AdminFundController::class, 'create'])->name('disbursements.create');
+    Route::get('/disbursements/{disbursement}/edit', [AdminFundController::class, 'edit'])->name('disbursements.edit');
+    Route::put('/disbursements/{disbursement}', [AdminFundController::class, 'update'])->name('disbursements.update');
+    Route::delete('/disbursements/{disbursement}', [AdminFundController::class, 'destroy'])->name('disbursements.destroy');
 });
 
 require __DIR__ . '/settings.php';

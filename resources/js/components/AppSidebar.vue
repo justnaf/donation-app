@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Boxes, LayoutGrid, BookMarked, Newspaper } from 'lucide-vue-next';
+import { BookOpen, Boxes, LayoutGrid, BookMarked, Newspaper, HandCoins } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -32,6 +32,12 @@ const mainNavItems: NavItem[] = [
         href: route('admin.news.index'),
         icon: Newspaper,
         activePattern: 'admin.news.*',
+    },
+    {
+        title: 'Programs Disbursements',
+        href: route('admin.disbursements.index'),
+        icon: HandCoins,
+        activePattern: 'admin.disbursements.*',
     },
 ];
 

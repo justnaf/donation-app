@@ -26,6 +26,9 @@ export type AppPageProps<T extends Record<string, unknown> = Record<string, unkn
     sidebarOpen: boolean;
 };
 
+export interface Role{
+    name:string
+}
 export interface User {
     id: number;
     username: string;
@@ -33,6 +36,7 @@ export interface User {
     email: string;
     avatar?: string;
     email_verified_at: string | null;
+    roles : Role[],
     created_at: string;
     updated_at: string;
 }

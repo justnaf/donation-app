@@ -30,16 +30,26 @@ const navItems: NavItem[] = [
 // Cek apakah user sudah login
 const user = computed(() => usePage().props.auth.user);
 
+const dashboardRoute = computed(() => {
+    if (!user.value) return route('login');
+    console.log(user.value);
+
+    const isAdmin = user.value.roles?.some((role: { name: string }) => role.name === 'admin');
+
+    return isAdmin ? route('admin.dashboard') : route('home');
+});
+
 // Jika sudah login, ganti item navigasi 'Akun'
 if (user.value) {
     navItems[2] = {
         title: 'Akun Saya',
-        href: route('dashboard'), // Arahkan ke dashboard
+        href: route('home'), // Arahkan ke dashboard
         icon: User,
         // Sesuaikan juga activePattern untuk dasbor
-        activePattern: 'dashboard',
+        activePattern: 'home',
     };
 }
+
 </script>
 
 <template>
@@ -67,8 +77,7 @@ if (user.value) {
 
                 <!-- Tombol Aksi Desktop -->
                 <div class="hidden md:block">
-                    <Link v-if="user"
-                        :href="route('dashboard')"
+                    <Link v-if="user" :href="dashboardRoute"
                         class="rounded-md bg-[#1C1C1C] px-4 py-2 text-sm font-medium text-white transition hover:bg-black">
                     Dashboard
                     </Link>

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import UpdateForm from './Partials/UpdateForm.vue';
+import DisbursementForm from './Partials/DisbursementForm.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 
+// Tipe Data untuk program yang diterima dari controller
 interface Program {
     id: number;
     name: string;
@@ -15,26 +16,22 @@ const props = defineProps<{
     program: Program;
 }>();
 
-console.log(props);
-
-
 // Membuat breadcrumbs dinamis yang menyertakan nama program
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: route('admin.dashboard') },
     { title: 'Kelola Program', href: route('admin.programs.index') },
-    { title: props.program.name, href: route('admin.programs.edit', { program: props.program.slug }) },
-    { title: 'Tambah Kabar Baru', href: route('admin.news.create', props.program.slug) },
+    { title: props.program.name, href: route('admin.programs.edit', props.program.slug) },
+    { title: 'Catat Pencairan Dana', href: route('admin.disbursements.create', props.program.slug) },
 ];
 </script>
 
 <template>
 
-    <Head title="Tambah Kabar Baru" />
+    <Head title="Catat Pencairan Dana" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div
-            class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <UpdateForm :program="program" />
+        <div class="p-4 sm:p-6">
+            <DisbursementForm :program="program" />
         </div>
     </AppLayout>
 </template>

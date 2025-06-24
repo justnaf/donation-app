@@ -73,8 +73,7 @@ const submit = () => {
         </div>
 
         <div class="mt-6 flex justify-end gap-2">
-            <Link
-                :href="route('admin.news.index', { program: program.slug })">
+            <Link :href="route('admin.news.index')">
             <Button type="button" variant="outline">
                 <ArrowLeft class="mr-2 h-4 w-4" /> Kembali
             </Button>

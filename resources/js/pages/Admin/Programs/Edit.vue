@@ -3,9 +3,11 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import ProgramForm from './Partials/ProgramForm.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
+import ManualDonationForm from './Partials/ManualDonationForm.vue';
 
 // Definisikan tipe untuk program yang diterima dari controller
 type ProgramStatus = 'draft' | 'active' | 'ended';
+interface Category { id: number; name: string; }
 interface Program {
     id: number;
     name: string;
@@ -18,10 +20,12 @@ interface Program {
     end_date: string | null;
     short_description: string;
     content: string;
+    donation_category_id: number | null;
 }
 
 const props = defineProps<{
     program: Program;
+    categories: Category[];
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -36,7 +40,9 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head :title="`Edit Program: ${program.name}`" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="rounded-xl p-4">
-            <ProgramForm :program="program" />
+            <ProgramForm :program="props.program"
+                :categories="props.categories" />
+            <ManualDonationForm :program-id="program.id" />
         </div>
     </AppLayout>
 </template>

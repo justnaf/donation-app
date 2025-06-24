@@ -11,8 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::create('donation_categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->string('slug')->unique();
+            $table->text('description')->nullable();
+            $table->timestamps();
+        });
+
         Schema::create('donation_programs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('donation_category_id')->nullable()->constrained('donation_categories')->onDelete('set null');
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('poster_path')->nullable();
@@ -34,6 +43,7 @@ return new class extends Migration
             $table->string('donator_name');
             $table->string('donator_email');
             $table->decimal('amount', 15, 2);
+            $table->decimal('fee', 15, 2)->default(0);
             $table->text('message')->nullable();
             $table->boolean('is_anonymous')->default(false);
             $table->string('status')->default('pending');

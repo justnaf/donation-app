@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { Link, useForm } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 
-// Impor komponen UI dan ikon
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,8 +10,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Image as ImageIcon, ArrowLeft } from 'lucide-vue-next';
 import InputError from '@/components/InputError.vue';
 
-// Definisikan tipe data
 type ProgramStatus = 'draft' | 'active' | 'ended';
+
+interface Category {
+    id: number;
+    slug: string;
+    name: string;
+}
+
 interface Program {
     id: number;
     name: string;
@@ -25,17 +30,16 @@ interface Program {
     end_date: string | null;
     short_description: string;
     content: string;
+    donation_category_id: number | null;
 }
 
-// 1. Terima 'program' sebagai prop, bisa null (untuk mode create)
 const props = defineProps<{
     program?: Program | null;
+    categories: Category[];
 }>();
 
-// 2. Tentukan apakah kita dalam mode 'edit'
 const isEditMode = !!props.program;
 
-// 3. Inisialisasi form secara dinamis
 const form = useForm({
     _method: isEditMode ? 'PUT' : 'POST', // Trik untuk upload file di form update
     name: props.program?.name ?? '',
@@ -46,9 +50,9 @@ const form = useForm({
     short_description: props.program?.short_description ?? '',
     content: props.program?.content ?? '',
     status: props.program?.status ?? 'draft',
+    donation_category_id: props.program?.donation_category_id ?? null,
 });
 
-// 4. Atur preview poster secara dinamis
 const posterPreview = ref<string | null>(props.program?.poster_url ?? null);
 
 const handlePosterChange = (event: Event) => {
@@ -59,12 +63,29 @@ const handlePosterChange = (event: Event) => {
         posterPreview.value = URL.createObjectURL(file);
     }
 };
+const categoryModel = computed({
+    // GET: dari form (number|null) -> ke komponen Select (string|undefined)
+    get() {
+        // Jika null, kembalikan undefined agar placeholder muncul
+        if (form.donation_category_id === null) {
+            return undefined;
+        }
+        // Ubah number menjadi string
+        return String(form.donation_category_id);
+    },
+    // SET: dari komponen Select (string) -> ke form (number|null)
+    set(value: string | undefined) {
+        if (value === undefined || value === null || value === '') {
+            form.donation_category_id = null;
+        } else {
+            // Ubah string kembali menjadi number
+            form.donation_category_id = parseInt(value, 10);
+        }
+    }
+});
 
-// 5. Buat fungsi submit yang dinamis
 const submit = () => {
     if (isEditMode) {
-        // PENTING: Untuk update dengan file, kita harus menggunakan POST,
-        // tapi dengan menyertakan _method: 'PUT'. Laravel akan mengerti.
         form.post(route('admin.programs.update', props.program!.slug));
     } else {
         form.post(route('admin.programs.store'));
@@ -107,6 +128,34 @@ const submit = () => {
             <div class="space-y-6 lg:col-span-2">
                 <div class="rounded-lg border p-6">
                     <div class="grid gap-4">
+                        <div>
+                            <Label for="category"
+                                class="mb-2">Kategori
+                                (Opsional)</Label>
+                            <Select
+                                v-model="form.donation_category_id">
+                                <SelectTrigger
+                                    id="category">
+                                    <SelectValue
+                                        placeholder="Pilih kategori..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem
+                                        value="null">--
+                                        Tanpa Kategori --
+                                    </SelectItem>
+                                    <SelectItem
+                                        v-for="category in props.categories"
+                                        :key="category.id"
+                                        :value="category.id">
+                                        {{ category.name }}
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <InputError
+                                :message="form.errors.donation_category_id"
+                                class="mt-2" />
+                        </div>
                         <div>
                             <Label for="name"
                                 class="mb-2">Nama

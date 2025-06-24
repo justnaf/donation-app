@@ -7,6 +7,7 @@ use App\Models\DonationProgram;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use App\Models\DonationCategory;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -38,7 +39,11 @@ class DonationProgramController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Admin/Programs/Create');
+        $categories = DonationCategory::orderBy('name')->get();
+
+        return Inertia::render('Admin/Programs/Create', [
+            'categories' => $categories,
+        ]);
     }
 
     /**
@@ -48,6 +53,7 @@ class DonationProgramController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:donation_programs',
+            'donation_category_id' => 'nullable|exists:donation_categories,id',
             'poster' => 'nullable|image|max:2048', // maks 2MB
             'target_amount' => 'required|numeric|min:0',
             'start_date' => 'nullable|date',
@@ -64,6 +70,7 @@ class DonationProgramController extends Controller
 
         DonationProgram::create([
             'name' => $validated['name'],
+            'donation_category_id' => $validated['donation_category_id'],
             'slug' => Str::slug($validated['name']) . '-' . uniqid(),
             'poster_path' => $posterPath,
             'target_amount' => $validated['target_amount'],
@@ -82,8 +89,11 @@ class DonationProgramController extends Controller
      */
     public function edit(DonationProgram $program): Response
     {
+        $categories = DonationCategory::orderBy('name')->get();
+
         return Inertia::render('Admin/Programs/Edit', [
-            'program' => $program
+            'program' => $program->load('category'), // Eager load kategori yang sudah dipilih
+            'categories' => $categories,
         ]);
     }
 
@@ -95,6 +105,7 @@ class DonationProgramController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255', Rule::unique('donation_programs')->ignore($program->id)],
             'poster' => 'nullable|image|max:2048',
+            'donation_category_id' => 'nullable|exists:donation_categories,id',
             'target_amount' => 'required|numeric|min:0',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',

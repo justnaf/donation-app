@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\DonationCategory;
 
 class DonationProgram extends Model
 {
@@ -19,6 +21,7 @@ class DonationProgram extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'donation_category_id',
         'name',
         'slug',
         'poster_path',
@@ -67,6 +70,10 @@ class DonationProgram extends Model
         return $this->hasMany(ProgramUpdate::class);
     }
 
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(DonationCategory::class, 'donation_category_id');
+    }
     /**
      * Relasi ke pencairan dana program.
      * Satu program bisa memiliki banyak pencairan dana.

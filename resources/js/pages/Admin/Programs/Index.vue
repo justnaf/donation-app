@@ -5,8 +5,9 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Image as ImageIcon, Pencil, PlusCircle, Trash2 } from 'lucide-vue-next';
+import { Image as ImageIcon, Pencil, PlusCircle, Trash2, List } from 'lucide-vue-next';
 import useSweetAlert from '@/composables/useSweetAlert';
+import Pagination from '@/components/Pagination.vue';
 
 type ProgramStatus = 'draft' | 'active' | 'ended';
 
@@ -32,7 +33,6 @@ interface PageProps {
     programs: {
         data: Program[];
         links: PaginationLink[];
-        meta: { links: PaginationLink[] };
     };
     filters: {
         search: string;
@@ -201,7 +201,17 @@ const breadcrumbs: BreadcrumbItem[] = [{ title: 'Kelola Program Donasi', href: r
                                         }}
                                     </TableCell>
                                     <TableCell
-                                        class="space-x-2 text-right">
+                                        class="space-x-2 text-right flex">
+                                        <Link
+                                            :href="route('admin.programs.donations.index', { program: program.slug })"
+                                            title="Lihat Daftar Donasi">
+                                        <Button
+                                            variant="outline"
+                                            size="icon">
+                                            <List
+                                                class="h-4 w-4" />
+                                        </Button>
+                                        </Link>
                                         <Link
                                             :href="route('admin.programs.edit', program.slug)">
                                         <Button
@@ -234,24 +244,7 @@ const breadcrumbs: BreadcrumbItem[] = [{ title: 'Kelola Program Donasi', href: r
                     </Table>
                 </div>
 
-                <div v-if="programs && programs.meta && programs.meta.links && programs.meta.links.length > 3"
-                    class="mt-4 flex justify-center">
-                    <nav
-                        class="isolate inline-flex -space-x-px rounded-md shadow-sm">
-                        <Link
-                            v-for="(link, index) in programs.meta.links"
-                            :key="`pagination-link-${index}`"
-                            :href="link.url || '#'"
-                            :disabled="!link.url"
-                            v-html="link.label"
-                            class="relative inline-flex items-center px-4 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 dark:ring-gray-700"
-                            :class="{
-                                'bg-primary text-white hover:bg-primary/90 dark:bg-primary dark:hover:bg-primary/90': link.active,
-                                'text-gray-400 cursor-not-allowed': !link.url,
-                                'text-gray-900 dark:text-gray-200': !link.active && link.url,
-                            }" />
-                    </nav>
-                </div>
+                <Pagination :links="programs.links" />
             </div>
         </div>
     </AppLayout>

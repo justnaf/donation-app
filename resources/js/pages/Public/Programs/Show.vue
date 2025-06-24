@@ -22,11 +22,8 @@ interface Program {
     start_date: string | null;
     end_date: string | null;
     short_description: string;
-    content: string;
-    category: Category | null;
-    donations: Donation[];
-    updates: ProgramUpdate[];
-    disbursements: Disbursement[];
+    content: string; category: Category | null;
+    donations: Donation[]; updates: ProgramUpdate[]; disbursements: Disbursement[];
 }
 
 defineProps<{

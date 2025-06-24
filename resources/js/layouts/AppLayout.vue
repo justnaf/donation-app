@@ -16,7 +16,6 @@ withDefaults(defineProps<Props>(), {
 const { success, error } = useSweetAlert();
 
 watchEffect(() => {
-    console.log(page.props);
     const flash = page.props as FlashProps;
     if (flash?.flash?.success) {
         success(flash.flash.success);

@@ -28,6 +28,8 @@ const props = defineProps<{
     categories: Category[];
 }>();
 
+console.log(props.program);
+
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Kelola Program Donasi', href: route('admin.programs.index') },
     { title: props.program.name, href: route('admin.programs.edit', props.program.id) },

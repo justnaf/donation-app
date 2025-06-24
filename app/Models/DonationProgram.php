@@ -49,7 +49,7 @@ class DonationProgram extends Model
      * @var array
      */
     protected $appends = [
-        'poster_url', // <-- Tambahkan ini
+        'poster_url',
         'collected_amount',
         'progress_percentage',
     ];
@@ -76,6 +76,7 @@ class DonationProgram extends Model
     {
         return $this->belongsTo(DonationCategory::class, 'donation_category_id');
     }
+
     /**
      * Relasi ke pencairan dana program.
      * Satu program bisa memiliki banyak pencairan dana.
@@ -84,14 +85,15 @@ class DonationProgram extends Model
     {
         return $this->hasMany(FundDisbursement::class);
     }
+
     /**
      * Accessor untuk mendapatkan total donasi yang terkumpul.
      * Penggunaan: $program->collected_amount
      */
     public function getCollectedAmountAttribute(): float
     {
-        // Hanya menjumlahkan donasi yang statusnya sudah 'paid'
-        return $this->donations()->where('status', 'paid')->sum('amount');
+        // Gunakan hasil dari withSum jika ada untuk efisiensi, jika tidak baru hitung manual.
+        return $this->donations_sum_amount ?? $this->donations()->where('status', 'paid')->sum('amount');
     }
 
     /**
@@ -113,13 +115,12 @@ class DonationProgram extends Model
     /**
      * Mengubah kunci rute default dari 'id' menjadi 'slug'.
      * Ini memungkinkan Route Model Binding menggunakan slug.
-     * Contoh: Route::get('/programs/{program}', ...);
-     * URL akan menjadi /programs/bantu-banjir, bukan /programs/1
      */
     public function getRouteKeyName(): string
     {
         return 'slug';
     }
+
     /**
      * Accessor untuk atribut 'poster_url'.
      *
@@ -127,18 +128,15 @@ class DonationProgram extends Model
      */
     public function getPosterUrlAttribute(): string
     {
-        // Jika tidak ada poster, kembalikan URL placeholder
         if (empty($this->poster_path)) {
-            // Anda bisa menggunakan layanan seperti unplash atau placeholder.com
             return 'https://via.placeholder.com/500x300.png?text=No+Image';
         }
 
-        // Jika path sudah berupa URL lengkap
         if (Str::startsWith($this->poster_path, 'http')) {
             return $this->poster_path;
         }
 
-        // Jika berupa path file, buat URL lengkap dari disk 'public'
+        // Gunakan Storage::disk('public') agar lebih eksplisit dan aman
         return Storage::url($this->poster_path);
     }
 }

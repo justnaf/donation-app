@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Midtrans\Config;
 use Midtrans\Snap;
+use Inertia\Inertia;
 
 class DonationController extends Controller
 {
@@ -87,6 +88,7 @@ class DonationController extends Controller
             $redirectUrl = $transaction->redirect_url;
             return response()->json([
                 'sent_params' => $params,
+                'order_id' => $donation->order_id,
                 'redirect_url' => $redirectUrl
             ]);
         } catch (\Exception $e) {
@@ -112,5 +114,25 @@ class DonationController extends Controller
         }
 
         return 0;
+    }
+
+    /**
+     * Menampilkan halaman status/tunggu.
+     */
+    public function show(Donation $donation)
+    {
+        return Inertia::render('Public/Programs/Status', [
+            'donation' => $donation->load('program'), // Kirim data donasi ke view
+        ]);
+    }
+
+    /**
+     * Endpoint API untuk memeriksa status terakhir dari sebuah donasi.
+     */
+    public function checkStatus(Donation $donation)
+    {
+        return response()->json([
+            'status' => $donation->status,
+        ]);
     }
 }

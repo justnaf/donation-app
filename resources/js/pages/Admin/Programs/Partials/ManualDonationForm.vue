@@ -8,7 +8,7 @@ import InputError from '@/components/InputError.vue';
 import { Checkbox } from '@/components/ui/checkbox';
 
 const props = defineProps<{
-    programId: number;
+    programSlug: string;
 }>();
 
 const form = useForm({
@@ -21,7 +21,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('admin.programs.donations.store', props.programId), {
+    form.post(route('admin.programs.donations.store', props.programSlug), {
         onSuccess: () => form.reset(), // Reset form setelah sukses
         preserveScroll: true,
     });
@@ -83,7 +83,7 @@ const submit = () => {
             </div>
             <div class="flex items-center space-x-2">
                 <Checkbox id="is_anonymous"
-                    v-model:checked="form.is_anonymous" />
+                    v-model="form.is_anonymous" />
                 <Label for="is_anonymous">Sembunyikan nama
                     (Donasi Anonim)</Label>
             </div>

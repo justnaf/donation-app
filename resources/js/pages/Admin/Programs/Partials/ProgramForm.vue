@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Link, useForm } from '@inertiajs/vue3';
-import { ref, watch, computed } from 'vue';
-
+import { ref, computed } from 'vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -53,6 +52,19 @@ const form = useForm({
     donation_category_id: props.program?.donation_category_id ?? null,
 });
 
+const categoryModel = computed({
+    get() {
+        const id = form.donation_category_id;
+        return id === null || id === undefined ? undefined : String(id);
+    },
+    set(value: string | undefined) {
+        if (value === undefined || value === null || value === '') {
+            form.donation_category_id = null;
+        } else {
+            form.donation_category_id = parseInt(value, 10);
+        }
+    }
+});
 const posterPreview = ref<string | null>(props.program?.poster_url ?? null);
 
 const handlePosterChange = (event: Event) => {
@@ -63,26 +75,6 @@ const handlePosterChange = (event: Event) => {
         posterPreview.value = URL.createObjectURL(file);
     }
 };
-const categoryModel = computed({
-    // GET: dari form (number|null) -> ke komponen Select (string|undefined)
-    get() {
-        // Jika null, kembalikan undefined agar placeholder muncul
-        if (form.donation_category_id === null) {
-            return undefined;
-        }
-        // Ubah number menjadi string
-        return String(form.donation_category_id);
-    },
-    // SET: dari komponen Select (string) -> ke form (number|null)
-    set(value: string | undefined) {
-        if (value === undefined || value === null || value === '') {
-            form.donation_category_id = null;
-        } else {
-            // Ubah string kembali menjadi number
-            form.donation_category_id = parseInt(value, 10);
-        }
-    }
-});
 
 const submit = () => {
     if (isEditMode) {
@@ -132,8 +124,7 @@ const submit = () => {
                             <Label for="category"
                                 class="mb-2">Kategori
                                 (Opsional)</Label>
-                            <Select
-                                v-model="form.donation_category_id">
+                            <Select v-model="categoryModel">
                                 <SelectTrigger
                                     id="category">
                                     <SelectValue
@@ -144,10 +135,11 @@ const submit = () => {
                                         value="null">--
                                         Tanpa Kategori --
                                     </SelectItem>
+
                                     <SelectItem
                                         v-for="category in props.categories"
                                         :key="category.id"
-                                        :value="category.id">
+                                        :value="String(category.id)">
                                         {{ category.name }}
                                     </SelectItem>
                                 </SelectContent>

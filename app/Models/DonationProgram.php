@@ -50,6 +50,8 @@ class DonationProgram extends Model
      */
     protected $appends = [
         'poster_url', // <-- Tambahkan ini
+        'collected_amount',
+        'progress_percentage',
     ];
 
     /**

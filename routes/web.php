@@ -12,16 +12,12 @@ Route::get('/', [DonationProgramController::class, 'index'])->name('home');
 Route::get('/programs', [DonationProgramController::class, 'indexPrograms'])->name('programs.index');
 Route::get('/programs/{program}/show', [DonationProgramController::class, 'showProgram'])->name('programs.show');
 Route::post('/donations', [DonationController::class, 'store'])->name('donations.store');
-
-
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/donations/{donation:order_id}/status', [DonationController::class, 'show'])->name('donations.status');
+Route::get('/donations/{donation:order_id}/check-status', [DonationController::class, 'checkStatus'])->name('donations.checkStatus');
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
-
     Route::get('/dashboard', function () {
-        return Inertia::render('Admin/Dashboard');
+        return Inertia::render('Dashboard');
     })->name('dashboard');
     Route::resource('programs', AdminDonationProgramController::class);
     Route::patch('programs/{program}/status', [AdminDonationProgramController::class, 'updateStatus'])->name('programs.update.status');

@@ -42,6 +42,7 @@ interface PageProps {
 const props = defineProps<PageProps>();
 const { confirmDelete } = useSweetAlert();
 
+
 const search = ref(props.filters.search);
 let searchTimer: ReturnType<typeof setTimeout>;
 

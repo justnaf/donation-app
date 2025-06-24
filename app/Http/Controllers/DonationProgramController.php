@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DonationProgram;
 use App\Models\DonationCategory;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
@@ -56,10 +57,16 @@ class DonationProgramController extends Controller
 
     public function showProgram(DonationProgram $program): Response
     {
-        if ($program->status !== 'active' && Auth::user()?->hasRole('donatur')) {
-            abort(404);
+        $user = Auth::user();
+        if ($user instanceof User) {
+            if ($program->status !== 'active' && $user->hasRole('donatur')) {
+                abort(404);
+            }
+        } else {
+            if ($program->status !== 'active') {
+                abort(404);
+            }
         }
-
         $program->load([
             'category',
             'donations' => function ($query) {

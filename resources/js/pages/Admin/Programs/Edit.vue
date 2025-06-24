@@ -7,7 +7,7 @@ import ManualDonationForm from './Partials/ManualDonationForm.vue';
 
 // Definisikan tipe untuk program yang diterima dari controller
 type ProgramStatus = 'draft' | 'active' | 'ended';
-interface Category { id: number; name: string; }
+interface Category { id: number; name: string; slug: string; }
 interface Program {
     id: number;
     name: string;
@@ -42,7 +42,8 @@ const breadcrumbs: BreadcrumbItem[] = [
         <div class="rounded-xl p-4">
             <ProgramForm :program="props.program"
                 :categories="props.categories" />
-            <ManualDonationForm :program-id="program.id" />
+            <ManualDonationForm
+                :program-slug="program.slug" />
         </div>
     </AppLayout>
 </template>

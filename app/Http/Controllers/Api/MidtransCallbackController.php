@@ -18,60 +18,74 @@ class MidtransCallbackController extends Controller
      */
     public function handle(Request $request)
     {
-        // Atur konfigurasi Midtrans
+        if (!$request->isMethod('post')) {
+            abort(404);
+        }
+        // 1. Atur konfigurasi Midtrans
         Config::$isProduction = config('services.midtrans.is_production');
         Config::$serverKey = config('services.midtrans.server_key');
 
-        // Buat instance notifikasi Midtrans
+        // 2. Buat instance notifikasi Midtrans
         try {
             $notification = new Notification();
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Invalid notification format.'], 400);
+            return response()->json(['message' => 'Invalid notification payload.'], 400);
         }
 
-        // Ambil data dari notifikasi
+        // 3. Verifikasi Signature Key (SANGAT PENTING UNTUK KEAMANAN)
         $orderId = $notification->order_id;
         $statusCode = $notification->status_code;
         $grossAmount = $notification->gross_amount;
         $signatureKey = $notification->signature_key;
-        $transactionStatus = $notification->transaction_status;
-        $paymentType = $notification->payment_type;
 
-        // Buat signature key untuk verifikasi dari sisi server kita
+        // Buat hash dari sisi server kita untuk dicocokkan
         $serverSignatureKey = hash('sha512', $orderId . $statusCode . $grossAmount . config('services.midtrans.server_key'));
 
-        // Verifikasi signature key untuk keamanan
+        // Jika signature tidak cocok, hentikan proses
         if ($signatureKey !== $serverSignatureKey) {
-            return response()->json(['message' => 'Invalid signature'], 403);
+            return response()->json(['message' => 'Invalid signature.'], 403);
         }
 
-        // Temukan donasi berdasarkan order_id
+        // 4. Temukan donasi di database kita berdasarkan order_id
         $donation = Donation::where('order_id', $orderId)->first();
-
         if (!$donation) {
-            return response()->json(['message' => 'Donation not found'], 404);
+            return response()->json(['message' => 'Donation not found.'], 404);
         }
 
-        // Jangan proses lagi jika statusnya sudah bukan 'pending' (mencegah duplikasi)
+        // 5. Pengecekan Idempotency: Jangan proses notifikasi yang sama berulang kali
+        // Jika status donasi sudah bukan 'pending', berarti sudah pernah diproses.
         if ($donation->status !== 'pending') {
             return response()->json(['message' => 'This order has already been processed.'], 200);
         }
 
-        // Update status donasi berdasarkan status transaksi Midtrans
-        if ($transactionStatus == 'capture' || $transactionStatus == 'settlement') {
-            $donation->status = 'paid';
-        } elseif ($transactionStatus == 'pending') {
-            $donation->status = 'pending';
-        } else {
-            // Untuk 'deny', 'expire', 'cancel', dll.
-            $donation->status = 'failed';
+        // 6. Update status donasi berdasarkan status transaksi dari Midtrans
+        $transactionStatus = $notification->transaction_status;
+        $paymentType = $notification->payment_type;
+
+        switch ($transactionStatus) {
+            case 'capture':
+            case 'settlement':
+                // Pembayaran berhasil (untuk kartu kredit, e-money, VA, dll.)
+                $donation->status = 'paid';
+                break;
+            case 'pending':
+                // Pembayaran masih menunggu (misal: transfer bank belum dibayar)
+                $donation->status = 'pending';
+                break;
+            case 'deny':
+            case 'expire':
+            case 'cancel':
+                // Pembayaran gagal, dibatalkan, atau kedaluwarsa
+                $donation->status = 'failed';
+                break;
         }
 
-        // Simpan juga metode pembayaran dan detail lengkapnya untuk arsip
+        // Simpan juga metode pembayaran dan detail lengkapnya untuk arsip/audit
         $donation->payment_method = $paymentType;
         $donation->payment_details = $notification->getResponse();
         $donation->save();
 
-        return response()->json(['message' => 'Notification successfully processed'], 200);
+        // 7. Beri respons 200 OK ke Midtrans
+        return response()->json(['message' => 'Notification successfully processed.']);
     }
 }

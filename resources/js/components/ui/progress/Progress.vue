@@ -14,10 +14,12 @@ const delegatedProps = computed(() => {
 </script>
 
 <template>
-    <ProgressRoot v-bind="delegatedProps"
-        :class="cn('relative h-4 w-full overflow-hidden rounded-full bg-secondary', props.class)">
-        <ProgressIndicator
-            class="h-full w-full flex-1 bg-primary transition-all"
-            :style="`transform: translateX(-${100 - (modelValue ?? 0)}%);`" />
-    </ProgressRoot>
+    <div>
+        <ProgressRoot v-bind="delegatedProps"
+            :class="cn('relative h-4 w-full overflow-hidden rounded-full bg-secondary', props.class)">
+            <ProgressIndicator
+                class="h-full w-full flex-1 bg-[#F08519]"
+                :style="`transform: translateX(-${100 - (modelValue ?? 0)}%);`" />
+        </ProgressRoot>
+    </div>
 </template>

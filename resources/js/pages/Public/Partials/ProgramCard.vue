@@ -13,7 +13,7 @@ interface Program {
 }
 
 // Komponen ini menerima 'program' sebagai prop
-const props = defineProps<{
+defineProps<{
     program: Program;
 }>();
 
@@ -45,17 +45,18 @@ const formatRupiah = (amount: number) => {
             <div class="mt-4 flex-grow">
                 <!-- Progress Bar -->
                 <div
-                    class="relative h-2 w-full overflow-hidden rounded-full bg-gray-200">
-                    <div class="absolute left-0 top-0 h-full rounded-full bg-green-500"
+                    class="relative h-2 w-full overflow-hidden rounded-full bg-orange-100 dark:bg-gray-700">
+                    <div class="absolute left-0 top-0 h-full rounded-full bg-[#F08519]"
                         :style="{ width: program.progress_percentage + '%' }">
                     </div>
                 </div>
                 <div
                     class="mt-2 flex justify-between text-sm">
-                    <span
-                        class="font-medium text-gray-800">{{
+                    <span class="font-bold text-[#F08519]">
+                        {{
                             formatRupiah(program.collected_amount)
-                        }}</span>
+                        }}
+                    </span>
                     <span class="text-gray-500">{{
                         Math.round(program.progress_percentage)
                         }}%</span>

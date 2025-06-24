@@ -28,13 +28,15 @@ const donatorDisplayName = (donation: Donation) => donation.is_anonymous ? 'Hamb
             <div
                 class="flex justify-between text-lg font-bold">
                 <span class="text-gray-600">Terkumpul</span>
-                <span>{{
+                <!-- Warna disesuaikan dengan warna utama -->
+                <span class="text-[#F08519]">{{
                     formatRupiah(program.collected_amount)
                     }}</span>
             </div>
+            <!-- Latar belakang progress bar disesuaikan -->
             <Progress
                 :model-value="program.progress_percentage"
-                class="my-2 h-2.5" />
+                class="my-2 h-2.5 bg-orange-100" />
             <div
                 class="flex justify-between text-sm text-gray-500">
                 <span>Target</span>
@@ -63,8 +65,10 @@ const donatorDisplayName = (donation: Donation) => donation.is_anonymous ? 'Hamb
                     <span class="font-medium">{{
                         donatorDisplayName(donation)
                         }}</span>
-                    <span class="font-bold text-primary">{{
-                        formatRupiah(donation.amount)
+                    <!-- Warna disesuaikan dengan warna utama -->
+                    <span
+                        class="font-bold text-[#F08519]">{{
+                            formatRupiah(donation.amount)
                         }}</span>
                 </li>
             </ul>

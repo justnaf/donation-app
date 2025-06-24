@@ -2,6 +2,8 @@
 import { useForm, usePage, router } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import axios from 'axios';
+
+// Impor komponen UI dan ikon
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -24,7 +26,7 @@ const donationForm = useForm({
     donator_email: authUser.value?.email ?? '',
     message: '',
     is_anonymous: false,
-    payment_method: 'gopay',
+    payment_method: 'other_qris',
 });
 
 // --- Computed Properties & Helpers ---
@@ -166,13 +168,14 @@ const submitDonation = () => {
                     <div
                         class="flex justify-between border-t pt-2 mt-2 font-bold text-base">
                         <span>Total Pembayaran</span>
-                        <span>{{ formatRupiah(totalAmount)
-                            }}</span>
+                        <span class="text-[#F08519]">{{
+                            formatRupiah(totalAmount)
+                        }}</span>
                     </div>
                 </div>
 
                 <Button type="submit"
-                    class="w-full h-12 text-lg"
+                    class="w-full h-12 text-lg bg-[#F08519] text-white hover:bg-[#F08519]/90"
                     :disabled="donationForm.processing">Lanjutkan
                     Pembayaran</Button>
             </div>

@@ -11,9 +11,9 @@ import AppLogo from './AppLogo.vue';
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: route('dashboard'),
+        href: route('admin.dashboard'),
         icon: LayoutGrid,
-        activePattern: 'dashboard',
+        activePattern: 'admin.dashboard',
     },
     {
         title: 'Kelola Kategori',
@@ -45,7 +45,8 @@ const footerNavItems: NavItem[] = [
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link :href="route('dashboard')">
+                        <Link
+                            :href="route('admin.dashboard')">
                         <AppLogo />
                         </Link>
                     </SidebarMenuButton>

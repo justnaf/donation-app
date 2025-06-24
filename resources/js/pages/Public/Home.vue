@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/layouts/PublicLayout.vue';
-import ProgramListSection from './Partials/ProgramListSection.vue'; // <-- Import partial
+import ProgramListSection from './Partials/ProgramListSection.vue';
 
 // Tentukan layout default untuk halaman ini
 defineOptions({ layout: PublicLayout });
@@ -51,8 +51,9 @@ const props = defineProps<{
                 baik.
             </p>
             <div class="mt-8">
+                <!-- Tombol disesuaikan dengan warna utama brand -->
                 <a href="#program-donasi"
-                    class="inline-block rounded-lg bg-primary px-8 py-3 text-base font-semibold text-primary-foreground shadow-lg transition hover:bg-primary/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+                    class="inline-block rounded-lg bg-[#F08519] px-8 py-3 text-base font-semibold text-white shadow-lg transition hover:bg-[#F08519]/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F08519]">
                     Mulai Berdonasi
                 </a>
             </div>

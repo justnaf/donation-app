@@ -16,7 +16,7 @@ interface Program {
     category: Category | null;
     updates: ProgramUpdate[];
     disbursements: Disbursement[];
-    donations: Donation[];
+    donations: Donation[]; // Menggunakan data pesan donatur yang sudah dimuat
 }
 
 // Props: Komponen ini menerima data program
@@ -50,7 +50,7 @@ const formatRupiah = (amount: number) => new Intl.NumberFormat('id-ID', { style:
             <div class="absolute bottom-0 left-0 p-6">
                 <Link v-if="program.category"
                     :href="route('programs.index', { category: program.category.slug })"
-                    class="mb-2 inline-block rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm transition hover:bg-white/30">
+                    class="mb-2 inline-block rounded-full bg-[#F08519]/70 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm transition hover:bg-[#F08519]/30">
                 {{ program.category.name }}
                 </Link>
                 <h1
@@ -146,11 +146,10 @@ const formatRupiah = (amount: number) => new Intl.NumberFormat('id-ID', { style:
                 <!-- Tab: Pesan Donatur -->
                 <div v-if="activeTab === 'messages'"
                     class="space-y-6">
-                    <div v-if="program.donations.length === 0"
+                    <div v-if="!program.donations || program.donations.length === 0"
                         class="text-center text-gray-500 py-8">
-                        <p>Belum ada pesan dan doa
-                            dari para donatur untuk
-                            program ini.</p>
+                        <p>Belum ada pesan dan doa dari para
+                            donatur untuk program ini.</p>
                     </div>
                     <div v-else class="space-y-4">
                         <article
@@ -181,8 +180,7 @@ const formatRupiah = (amount: number) => new Intl.NumberFormat('id-ID', { style:
                                     </div>
                                     <blockquote
                                         class="mt-2 text-sm italic text-gray-600 dark:text-gray-300">
-                                        "{{
-                                            donation.message
+                                        "{{ donation.message
                                         }}"
                                     </blockquote>
                                 </div>

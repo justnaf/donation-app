@@ -4,7 +4,7 @@ import ProgramForm from './Partials/ProgramForm.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 
-interface Category { id: number; name: string; }
+interface Category { id: number; name: string; slug: string; }
 const props = defineProps<{
     categories: Category[];
 }>();

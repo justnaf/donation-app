@@ -50,8 +50,9 @@ onUnmounted(() => {
     <div class="w-full max-w-md text-center">
         <!-- Tampilan Pending -->
         <div v-if="currentStatus === 'pending'">
+            <!-- Ikon loader menggunakan warna utama brand -->
             <LoaderCircle
-                class="mx-auto h-16 w-16 animate-spin text-yellow-500" />
+                class="mx-auto h-16 w-16 animate-spin text-[#F08519]" />
             <h1 class="mt-4 text-2xl font-bold">Menunggu
                 Pembayaran</h1>
             <p class="mt-2 text-gray-600">
@@ -65,6 +66,7 @@ onUnmounted(() => {
 
         <!-- Tampilan Sukses -->
         <div v-else-if="currentStatus === 'paid'">
+            <!-- Ikon sukses tetap hijau untuk pemahaman universal -->
             <CheckCircle2
                 class="mx-auto h-16 w-16 text-green-500" />
             <h1 class="mt-4 text-2xl font-bold">Terima
@@ -75,15 +77,17 @@ onUnmounted(() => {
                         donation.program.name }}</strong> telah
                 berhasil kami terima.
             </p>
+            <!-- Tombol menggunakan warna utama brand -->
             <Link
                 :href="route('programs.show', { program: donation.program.slug })"
-                class="mt-6 inline-block rounded-md bg-primary px-6 py-2 text-white">
+                class="mt-6 inline-block rounded-md bg-[#F08519] px-6 py-2 text-white transition hover:bg-[#F08519]/90">
             Kembali ke Program
             </Link>
         </div>
 
         <!-- Tampilan Gagal -->
         <div v-else>
+            <!-- Ikon gagal tetap merah untuk pemahaman universal -->
             <XCircle
                 class="mx-auto h-16 w-16 text-red-500" />
             <h1 class="mt-4 text-2xl font-bold">Pembayaran
@@ -92,9 +96,10 @@ onUnmounted(() => {
                 Pembayaran untuk donasi ini gagal,
                 dibatalkan, atau telah kedaluwarsa.
             </p>
+            <!-- Tombol menggunakan warna utama brand -->
             <Link
                 :href="route('programs.show', { program: donation.program.slug })"
-                class="mt-6 inline-block rounded-md bg-primary px-6 py-2 text-white">
+                class="mt-6 inline-block rounded-md bg-[#F08519] px-6 py-2 text-white transition hover:bg-[#F08519]/90">
             Coba Lagi
             </Link>
         </div>

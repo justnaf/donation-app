@@ -19,7 +19,7 @@ interface PaginationLink {
 }
 
 // Props: Menerima objek paginasi dari parent
-const props = defineProps<{
+defineProps<{
     programs: {
         data: Program[];
         links: PaginationLink[];

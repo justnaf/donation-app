@@ -27,7 +27,7 @@ interface PaginatedPrograms {
     links: { url: string | null; label: string; active: boolean; }[];
 }
 
-const props = defineProps<{
+defineProps<{
     programs: PaginatedPrograms;
     categories: Category[];
     filters: {
@@ -35,14 +35,6 @@ const props = defineProps<{
     };
 }>();
 
-// Helper
-const formatRupiah = (amount: number) => {
-    return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0,
-    }).format(amount);
-};
 </script>
 
 <template>

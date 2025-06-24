@@ -11,7 +11,7 @@ interface Program {
     donations: Donation[];
 }
 
-const props = defineProps<{
+defineProps<{
     program: Program;
     fees: Record<string, number | string>;
 }>();
@@ -31,7 +31,7 @@ const donatorDisplayName = (donation: Donation) => donation.is_anonymous ? 'Hamb
                 <!-- Warna disesuaikan dengan warna utama -->
                 <span class="text-[#F08519]">{{
                     formatRupiah(program.collected_amount)
-                    }}</span>
+                }}</span>
             </div>
             <!-- Latar belakang progress bar disesuaikan -->
             <Progress
@@ -41,7 +41,7 @@ const donatorDisplayName = (donation: Donation) => donation.is_anonymous ? 'Hamb
                 class="flex justify-between text-sm text-gray-500">
                 <span>Target</span>
                 <span>{{ formatRupiah(program.target_amount)
-                    }}</span>
+                }}</span>
             </div>
         </div>
 
@@ -64,7 +64,7 @@ const donatorDisplayName = (donation: Donation) => donation.is_anonymous ? 'Hamb
                     class="flex items-center justify-between text-sm">
                     <span class="font-medium">{{
                         donatorDisplayName(donation)
-                        }}</span>
+                    }}</span>
                     <!-- Warna disesuaikan dengan warna utama -->
                     <span
                         class="font-bold text-[#F08519]">{{

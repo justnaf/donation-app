@@ -20,7 +20,7 @@ interface Program {
 }
 
 // Props: Komponen ini menerima data program
-const props = defineProps<{
+defineProps<{
     program: Program;
 }>();
 

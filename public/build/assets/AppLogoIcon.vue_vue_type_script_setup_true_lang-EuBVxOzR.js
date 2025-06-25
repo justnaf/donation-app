@@ -1,0 +1,1 @@
+import{d as e,c as o,o as a,z as r}from"./app-DtRPc5aY.js";const l=e({inheritAttrs:!1,__name:"AppLogoIcon",props:{className:{}},setup(t){return(s,n)=>(a(),o("img",r({src:"/logo.svg",alt:"Logo Kota Magelang",class:s.className},s.$attrs),null,16))}});export{l as _};

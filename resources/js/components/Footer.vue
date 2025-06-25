@@ -27,17 +27,8 @@ import { Facebook, Instagram } from 'lucide-vue-next';
                     <ul class="mt-4 space-y-2 text-sm">
                         <li>
                             <a href="#"
-                                class="text-gray-400 transition-colors hover:text-[#F08519]">Tentang
-                                Kami</a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="text-gray-400 transition-colors hover:text-[#F08519]">Hubungi
-                                Kami</a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="text-gray-400 transition-colors hover:text-[#F08519]">FAQ</a>
+                                class="text-gray-400 transition-colors hover:text-[#F08519]">Under
+                                Construction</a>
                         </li>
                     </ul>
                 </div>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AppLogo from './AppLogo.vue';
 import { Facebook, Instagram } from 'lucide-vue-next';
+import AppLogoIcon from './AppLogoIcon.vue';
 </script>
 <template>
     <footer class="bg-[#1C1C1C] text-white">
@@ -9,8 +9,8 @@ import { Facebook, Instagram } from 'lucide-vue-next';
                 class="grid grid-cols-1 gap-8 text-center md:grid-cols-3 md:text-left">
                 <section id="platform-bio">
                     <div
-                        class="mb-4 flex items-center justify-center lg:justify-start">
-                        <AppLogo />
+                        class="flex aspect-square mb-2 size-20 items-center justify-center bg-white rounded-md">
+                        <AppLogoIcon class="size-18 " />
                     </div>
                     <p class="text-sm text-gray-400">
                         Platform donasi online yang aman dan

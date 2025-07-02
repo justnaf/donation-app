@@ -27,6 +27,9 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
+        $middleware->validateCsrfTokens(except: [
+            'https://donasi.lazismukotamagelang.id/api/midtrans/callback',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

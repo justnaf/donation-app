@@ -6,50 +6,55 @@ import type { NavItem } from '@/types';
 import Footer from '@/components/Footer.vue';
 import AppLogo from '@/components/AppLogo.vue';
 
-const navItems: NavItem[] = [
-    {
-        title: 'Beranda',
-        href: route('home'),
-        icon: Home,
-        activePattern: 'home',
-    },
-    {
-        title: 'Program',
-        href: route('programs.index'),
-        icon: Boxes,
-        activePattern: 'programs.*',
-    },
-    {
-        title: 'Akun',
-        href: route('login'),
-        icon: LogIn,
-        activePattern: 'login',
-    },
-];
-
-// Cek apakah user sudah login
+// Cek apakah user sudah login (reaktif)
 const user = computed(() => usePage().props.auth.user);
 
 const dashboardRoute = computed(() => {
     if (!user.value) return route('login');
-    console.log(user.value);
 
+    // Optional chaining untuk keamanan jika roles null/undefined
     const isAdmin = user.value.roles?.some((role: { name: string }) => role.name === 'admin');
 
     return isAdmin ? route('admin.dashboard') : route('home');
 });
 
-// Jika sudah login, ganti item navigasi 'Akun'
-if (user.value) {
-    navItems[2] = {
-        title: 'Akun Saya',
-        href: route('home'), // Arahkan ke dashboard
-        icon: User,
-        // Sesuaikan juga activePattern untuk dasbor
-        activePattern: 'home',
-    };
-}
+// PERBAIKAN: Ubah navItems menjadi computed agar reaktif terhadap perubahan user
+const navItems = computed<NavItem[]>(() => {
+    // Item dasar yang selalu ada
+    const items = [
+        {
+            title: 'Beranda',
+            href: route('home'),
+            icon: Home,
+            activePattern: 'home',
+        },
+        {
+            title: 'Program',
+            href: route('programs.index'),
+            icon: Boxes,
+            activePattern: 'programs.*',
+        },
+    ];
 
+    // Logika Kondisional: Jika user ada, tampilkan 'Akun Saya', jika tidak 'Akun'
+    if (user.value) {
+        items.push({
+            title: 'Akun Saya',
+            href: dashboardRoute.value, // Lebih baik arahkan ke logika dashboardRoute
+            icon: User,
+            activePattern: 'dashboard', // Sesuaikan jika perlu
+        });
+    } else {
+        items.push({
+            title: 'Akun',
+            href: route('login'),
+            icon: LogIn,
+            activePattern: 'login',
+        });
+    }
+
+    return items;
+});
 </script>
 
 <template>

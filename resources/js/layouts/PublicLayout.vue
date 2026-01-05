@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
-import { Home, Boxes, User, LogIn } from 'lucide-vue-next';
+import { Home, Boxes, User, LogIn, LogOut } from 'lucide-vue-next';
 import type { NavItem } from '@/types';
 import Footer from '@/components/Footer.vue';
 import AppLogo from '@/components/AppLogo.vue';
@@ -61,7 +61,7 @@ if (user.value) {
                 class="container mx-auto flex h-16 items-center justify-between px-4">
                 <Link :href="route('home')"
                     class="flex items-center gap-2">
-                <AppLogo />
+                    <AppLogo />
                 </Link>
 
                 <!-- Navigasi Desktop -->
@@ -71,7 +71,7 @@ if (user.value) {
                         :key="item.title" :href="item.href"
                         class="text-sm font-medium text-gray-600 transition-colors hover:text-[#F08519]"
                         :class="{ 'text-[#F08519] font-bold': !item.external && item.activePattern ? route().current(item.activePattern) : false }">
-                    {{ item.title }}
+                        {{ item.title }}
                     </Link>
                 </nav>
 
@@ -79,11 +79,18 @@ if (user.value) {
                 <div class="hidden md:block">
                     <Link v-if="user" :href="dashboardRoute"
                         class="rounded-md bg-[#1C1C1C] px-4 py-2 text-sm font-medium text-white transition hover:bg-black">
-                    Dashboard
+                        Dashboard
+                    </Link>
+                    <Link v-if="user"
+                        :href="route('logout')"
+                        method="post" as="button"
+                        type="button"
+                        class="rounded-md bg-[#1C1C1C] px-4 py-2 text-sm font-medium text-white transition hover:bg-blackml-2">
+                        Keluar
                     </Link>
                     <Link v-else :href="route('login')"
                         class="rounded-md bg-[#F08519] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#F08519]/90">
-                    Masuk / Daftar
+                        Masuk / Daftar
                     </Link>
                 </div>
             </div>
@@ -105,9 +112,9 @@ if (user.value) {
                     :key="item.title" :href="item.href"
                     class="flex flex-col items-center justify-center gap-1 text-xs text-gray-500 transition-colors hover:text-[#F08519]"
                     :class="{ 'text-[#F08519] font-semibold': !item.external && item.activePattern ? route().current(item.activePattern) : false }">
-                <component :is="item.icon"
-                    class="h-5 w-5" />
-                <span>{{ item.title }}</span>
+                    <component :is="item.icon"
+                        class="h-5 w-5" />
+                    <span>{{ item.title }}</span>
                 </Link>
             </nav>
         </footer>

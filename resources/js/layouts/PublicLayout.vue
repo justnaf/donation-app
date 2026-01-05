@@ -78,14 +78,14 @@ if (user.value) {
                 <!-- Tombol Aksi Desktop -->
                 <div class="hidden md:block">
                     <Link v-if="user" :href="dashboardRoute"
-                        class="rounded-md bg-[#1C1C1C] px-4 py-2 text-sm font-medium text-white transition hover:bg-black">
+                        class="rounded-md bg-[#1C1C1C] px-4 py-2 text-sm font-medium text-white transition hover:bg-black mr-3">
                         Dashboard
                     </Link>
                     <Link v-if="user"
                         :href="route('logout')"
                         method="post" as="button"
                         type="button"
-                        class="rounded-md bg-[#1C1C1C] px-4 py-2 text-sm font-medium text-white transition hover:bg-blackml-2">
+                        class="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition  hover:bg-red-400 ml-3">
                         Keluar
                     </Link>
                     <Link v-else :href="route('login')"

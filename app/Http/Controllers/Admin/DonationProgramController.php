@@ -142,12 +142,13 @@ class DonationProgramController extends Controller
      */
     public function destroy(DonationProgram $program)
     {
-        // Karena kita menggunakan SoftDeletes, ini tidak akan menghapus data secara permanen
-        $program->delete();
+        // Menggunakan forceDelete() akan menghapus data permanen dari database
+        // meskipun model menggunakan trait SoftDeletes.
+        $program->forceDelete();
 
-        return Redirect::route('admin.programs.index')->with('success', 'Program donasi berhasil dihapus.');
+        return Redirect::route('admin.programs.index')
+            ->with('success', 'Program donasi berhasil dihapus secara permanen.');
     }
-
     public function updateStatus(Request $request, DonationProgram $program)
     {
         $request->validate(['status' => ['required', Rule::in(['draft', 'active', 'ended'])]]);

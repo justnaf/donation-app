@@ -47,8 +47,25 @@ const totalAmount = computed(() => {
 });
 const formatRupiah = (amount: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
 
+const paymentLabels: Record<string, string> = {
+    'bri_va': 'BRI Virtual Account',
+    'bni_va': 'BNI Virtual Account',
+    'bca_va': 'BCA Virtual Account',
+    'echannel': 'Mandiri Virtual Account',
+    'permata_va': 'Permata Virtual Account',
+    'cimb_va': 'CIMB Virtual Account',
+    'other_qris': 'QRIS',
+    'gopay': 'GoPay',
+    'shopeepay': 'ShopeePay',
+};
+
 const formatPaymentMethod = (method: string): string => {
     if (!method) return '';
+
+    if (paymentLabels[method]) {
+        return paymentLabels[method];
+    }
+
     return method.replace(/_/g, ' ').toUpperCase();
 };
 // --- Fungsi Submit ---

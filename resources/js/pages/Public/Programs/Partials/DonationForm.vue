@@ -26,7 +26,7 @@ const donationForm = useForm({
     donator_email: authUser.value?.email ?? '',
     message: '',
     is_anonymous: false,
-    payment_method: 'other_qris',
+    payment_method: 'bri_va',
 });
 
 // --- Computed Properties & Helpers ---
@@ -180,14 +180,14 @@ const submitDonation = () => {
                             Transaksi</span>
                         <span class="font-medium">{{
                             formatRupiah(transactionFee)
-                            }}</span>
+                        }}</span>
                     </div>
                     <div
                         class="flex justify-between border-t pt-2 mt-2 font-bold text-base">
                         <span>Total Pembayaran</span>
                         <span class="text-[#F08519]">{{
                             formatRupiah(totalAmount)
-                        }}</span>
+                            }}</span>
                     </div>
                 </div>
 
